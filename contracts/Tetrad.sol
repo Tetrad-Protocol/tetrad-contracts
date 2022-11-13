@@ -5,7 +5,7 @@ Tokenomics:
 10% of each buy goes to existing holders.
 10% of each sell goes into multi-chain farming to add to the treasury and buy back TRADE tokens.
 */
-// SPDX-License-Identifier: Unlicensed
+// SPDX-License-Identifier: MIT
 pragma solidity ^ 0.6.12;
 abstract contract Context {
     function _msgSender() internal view virtual returns(address payable) {

@@ -455,4 +455,15 @@ contract TetradRewardPool {
         }
         _token.safeTransfer(to, amount);
     }
+
+    function getTetradPerSecondInPool(uint256 _pid) public view returns (uint256)
+    {
+        PoolInfo storage pool = poolInfo[_pid];
+        uint256 poolTetradPerSecond = tetradPerSecond.mul(pool.allocPoint).div(totalAllocPoint);
+        return poolTetradPerSecond;
+    }
+
+    function poolLength() external view returns (uint256) {
+        return poolInfo.length;
+    }
 }
