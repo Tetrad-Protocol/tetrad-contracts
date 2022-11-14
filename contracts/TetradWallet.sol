@@ -196,6 +196,11 @@ contract TetradWallet
         //Done this way so that if a pending does nothing, it will be counted the next nonce.
     }
 
+    function fundsAvailableForAdmin() public view returns (uint256)
+    {
+        return asset.balanceOf(address(this)) - pendingDeposited[nonce];
+    }
+
     //For the website and anyone who wishes to query this.
     function availableToWithdraw(address collector) public view returns (uint256)
     {
@@ -406,6 +411,7 @@ contract TetradWallet
     {
         //This also marks the start of the next nonce.
         require(isLocked(), "Can only move funds when locked.");
+        require(amount <= fundsAvailableForAdmin(), "Not enough funds available.");
         (uint256 year, uint256 month,) = BokkyPooBahsDateTimeLibrary.timestampToDate(block.timestamp);
         //Only increase nonce if it is the first time this month.
         if(lastYearChange != year || lastMonthChange != month)
