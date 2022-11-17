@@ -147,6 +147,7 @@ contract TetradWallet
     mapping(uint256 => mapping(address => uint256)) public pendingShare;
     mapping(address => mapping(address => uint256)) public allowance;
     IERC20 public asset;
+    address public feeWallet;
 
     event Approval(address behalfOf, address spender, uint256 amount);
     event Deposit(uint256 nonce, address behalfOf, address spender, uint256 amount);
@@ -165,6 +166,7 @@ contract TetradWallet
         unlockDayMin = 1;
         unlockDayMax = 5;
         asset = depositedAsset;
+        feeWallet = msgSender;
     }
 
     function isLocked() public view returns (bool) {
@@ -411,15 +413,18 @@ contract TetradWallet
     {
         //This also marks the start of the next nonce.
         require(isLocked(), "Can only move funds when locked.");
-        require(amount <= fundsAvailableForAdmin(), "Not enough funds available.");
         (uint256 year, uint256 month,) = BokkyPooBahsDateTimeLibrary.timestampToDate(block.timestamp);
         //Only increase nonce if it is the first time this month.
-        if(lastYearChange != year || lastMonthChange != month)
+        if(lastYearChange != year || lastMonthChange != month) //All funds become available when the nonce changes.
         {
             lastYearChange = year;
             lastMonthChange = month;
             nonce += 1;
             emit NonceIncrease(nonce);
+        }
+        else
+        {
+            require(amount <= fundsAvailableForAdmin(), "Not enough funds available.");
         }
         emit AdminWithdraw(nonce, msg.sender, amount);
         asset.transfer(msg.sender, amount);
@@ -433,6 +438,11 @@ contract TetradWallet
         withdrawFee = fee;
         unlockDayMin = unlockMin;
         unlockDayMax = unlockMax;
+    }
+
+    function adminChangeFeeWallet(address wallet) external onlyOwner
+    {
+        feeWallet = wallet;
     }
 }
 
