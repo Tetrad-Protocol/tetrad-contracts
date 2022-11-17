@@ -79,7 +79,7 @@ describe('v2', function () {
             code,
         ]);
         today = new Date().getUTCDate();
-        await ethers.provider.send('evm_mine', []);
+        await tetradWallet.adminChangeFeeWallet(deployer.address);
         await setTime(ethers.provider, Math.floor(Date.now() / 1000));
         await ethers.provider.send('evm_mine', []);
     });
@@ -727,7 +727,7 @@ describe('v2', function () {
             console.log(ethers.utils.formatEther(await dummyToken.balanceOf(devfund.address)));
         });
 
-        it.only("withdrawIgnoreLosses SUCCESS", async () => {
+        it("withdrawIgnoreLosses SUCCESS", async () => {
             //Set unlock time to today
             await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
             await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));

@@ -45,6 +45,528 @@
       "TetradWallet": {
         "src": "contracts\\TetradWallet.sol:73",
         "version": {
+          "withMetadata": "cdafa5733e15e3bb34ab6b4b43e16012c683f4660401ea9a905002df80989c33",
+          "withoutMetadata": "2333d0eddf3a8d9a36a02f498db218059d31032b6b12478f233021a7074db72d",
+          "linkedWithoutMetadata": "2333d0eddf3a8d9a36a02f498db218059d31032b6b12478f233021a7074db72d"
+        },
+        "inherit": [],
+        "libraries": [
+          "BokkyPooBahsDateTimeLibrary"
+        ],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)",
+          "getUnlockTime()",
+          "lock(uint256)",
+          "unlock()",
+          "(address)",
+          "isLocked()",
+          "deposit(uint256)",
+          "depositOnBehalfOf(address,uint256)",
+          "balanceToCollect(address)",
+          "fundsAvailableForAdmin()",
+          "availableToWithdraw(address)",
+          "availableToWithdrawWithFee(address)",
+          "unavailableToWithdraw(address)",
+          "unavailableToWithdrawWithFee(address)",
+          "currentPendingBalanceOf(address)",
+          "currentTotalPending()",
+          "approve(address,uint256)",
+          "withdrawOnBehalfOf(address,uint256)",
+          "collectOnBehalfOf(address)",
+          "withdrawIgnoreLossesOnBehalfOf(address,uint256)",
+          "takeProfitOnBehalfOf(address)",
+          "withdrawInitialMinusFeeOnBehalfOf(address)",
+          "withdraw(uint256)",
+          "collect()",
+          "withdrawIgnoreLosses(uint256)",
+          "takeProfit()",
+          "withdrawInitialMinusFee()",
+          "adminDeposit(uint256)",
+          "adminWithdraw(uint256)",
+          "adminSettings(uint256,uint256,uint256)",
+          "adminChangeFeeWallet(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "TetradWallet",
+            "src": "contracts\\TetradWallet.sol:159"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:75"
+            },
+            {
+              "label": "_previousOwner",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:76"
+            },
+            {
+              "label": "_lockTime",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:77"
+            },
+            {
+              "label": "totalDeposited",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:138"
+            },
+            {
+              "label": "lastMonthChange",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:139"
+            },
+            {
+              "label": "lastYearChange",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:140"
+            },
+            {
+              "label": "withdrawFee",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:141"
+            },
+            {
+              "label": "unlockDayMin",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:142"
+            },
+            {
+              "label": "unlockDayMax",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:143"
+            },
+            {
+              "label": "nonce",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:144"
+            },
+            {
+              "label": "pendingDeposited",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_mapping(t_uint256,t_uint256)",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:145"
+            },
+            {
+              "label": "share",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:146"
+            },
+            {
+              "label": "pendingShare",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:147"
+            },
+            {
+              "label": "allowance",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:148"
+            },
+            {
+              "label": "asset",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_contract(IERC20)1561",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:149"
+            },
+            {
+              "label": "feeWallet",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:150"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_contract(IERC20)1561": {
+              "label": "contract IERC20",
+              "numberOfBytes": "20"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(address => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(uint256 => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_uint256)": {
+              "label": "mapping(uint256 => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      }
+    },
+    {
+      "BokkyPooBahsDateTimeLibrary": {
+        "src": "contracts\\BokkyPooBahsDateTimeLibrary.sol:29",
+        "version": {
+          "withMetadata": "7f18457b2b4070bbe08a0136f16eda4bbf1248eac3f451ac58e28fa602a9708f",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC20": {
+        "src": "contracts\\TetradWallet.sol:6",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "totalSupply()",
+          "balanceOf(address)",
+          "transfer(address,uint256)",
+          "allowance(address,address)",
+          "approve(address,uint256)",
+          "transferFrom(address,address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "TetradWallet": {
+        "src": "contracts\\TetradWallet.sol:73",
+        "version": {
+          "withMetadata": "10c9d85b1c3d4f0f035221f47c3f54e96c6d3cd269d6226120cb7a7fb4948a2b",
+          "withoutMetadata": "7e3de34f92ebbf675bc447847cc6a516f2ad7d7963dc7bcdb9250c3ab7dee424",
+          "linkedWithoutMetadata": "7e3de34f92ebbf675bc447847cc6a516f2ad7d7963dc7bcdb9250c3ab7dee424"
+        },
+        "inherit": [],
+        "libraries": [
+          "BokkyPooBahsDateTimeLibrary"
+        ],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)",
+          "getUnlockTime()",
+          "lock(uint256)",
+          "unlock()",
+          "(address)",
+          "isLocked()",
+          "deposit(uint256)",
+          "depositOnBehalfOf(address,uint256)",
+          "balanceToCollect(address)",
+          "fundsAvailableForAdmin()",
+          "availableToWithdraw(address)",
+          "availableToWithdrawWithFee(address)",
+          "unavailableToWithdraw(address)",
+          "unavailableToWithdrawWithFee(address)",
+          "currentPendingBalanceOf(address)",
+          "currentTotalPending()",
+          "approve(address,uint256)",
+          "withdrawOnBehalfOf(address,uint256)",
+          "collectOnBehalfOf(address)",
+          "withdrawIgnoreLossesOnBehalfOf(address,uint256)",
+          "takeProfitOnBehalfOf(address)",
+          "withdrawInitialMinusFeeOnBehalfOf(address)",
+          "withdraw(uint256)",
+          "collect()",
+          "withdrawIgnoreLosses(uint256)",
+          "takeProfit()",
+          "withdrawInitialMinusFee()",
+          "adminDeposit(uint256)",
+          "adminWithdraw(uint256)",
+          "adminSettings(uint256,uint256,uint256)",
+          "adminChangeFeeWallet(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "TetradWallet",
+            "src": "contracts\\TetradWallet.sol:159"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:75"
+            },
+            {
+              "label": "_previousOwner",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:76"
+            },
+            {
+              "label": "_lockTime",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:77"
+            },
+            {
+              "label": "totalDeposited",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:138"
+            },
+            {
+              "label": "lastMonthChange",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:139"
+            },
+            {
+              "label": "lastYearChange",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:140"
+            },
+            {
+              "label": "withdrawFee",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:141"
+            },
+            {
+              "label": "unlockDayMin",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:142"
+            },
+            {
+              "label": "unlockDayMax",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:143"
+            },
+            {
+              "label": "nonce",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_uint256",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:144"
+            },
+            {
+              "label": "pendingDeposited",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_mapping(t_uint256,t_uint256)",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:145"
+            },
+            {
+              "label": "share",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:146"
+            },
+            {
+              "label": "pendingShare",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:147"
+            },
+            {
+              "label": "allowance",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:148"
+            },
+            {
+              "label": "asset",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_contract(IERC20)1561",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:149"
+            },
+            {
+              "label": "feeWallet",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_address",
+              "contract": "TetradWallet",
+              "src": "contracts\\TetradWallet.sol:150"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_contract(IERC20)1561": {
+              "label": "contract IERC20",
+              "numberOfBytes": "20"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(address => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(uint256 => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_uint256,t_uint256)": {
+              "label": "mapping(uint256 => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      }
+    },
+    {
+      "BokkyPooBahsDateTimeLibrary": {
+        "src": "contracts\\BokkyPooBahsDateTimeLibrary.sol:29",
+        "version": {
+          "withMetadata": "7f18457b2b4070bbe08a0136f16eda4bbf1248eac3f451ac58e28fa602a9708f",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC20": {
+        "src": "contracts\\TetradWallet.sol:6",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "totalSupply()",
+          "balanceOf(address)",
+          "transfer(address,uint256)",
+          "allowance(address,address)",
+          "approve(address,uint256)",
+          "transferFrom(address,address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "TetradWallet": {
+        "src": "contracts\\TetradWallet.sol:73",
+        "version": {
           "withMetadata": "c8ae69eb68ea4e7beb9aa88a33870bbc642ae86e2be6405b6075ada8dcf89787",
           "withoutMetadata": "6aba5fe8bfed11dc7a019e3f24058409308fb11f6abd46cc1b67cdd9f9c3f9db",
           "linkedWithoutMetadata": "6aba5fe8bfed11dc7a019e3f24058409308fb11f6abd46cc1b67cdd9f9c3f9db"
