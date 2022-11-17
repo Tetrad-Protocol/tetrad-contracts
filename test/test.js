@@ -748,8 +748,52 @@ describe('v2', function () {
             console.log(ethers.utils.formatEther(await dummyToken.balanceOf(devfund.address)));
         });
 
-        //TODO: Failure cases
-        //TODO: Stretch goal (after test deployment, before mainnet deployment): OnBehalfOf versions of the three above, admin functionality
+        //Non-admin failure cases
+
+        it("approve FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await expect(tetradWallet.approve(ethers.constants.AddressZero, ethers.constants.MaxUint256)).to.be.revertedWith("TetradWallet: approve to the zero address");
+        });
+
+        it("spendAllowance FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.deposit(oneHundred);
+            await tetradWallet.connect(devfund).approve(deployer.address, 1);
+            await dummyToken.transfer(devfund.address, oneHundred.div(2));
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.depositOnBehalfOf(devfund.address, oneHundred.div(2));
+            await expect(tetradWallet.withdrawOnBehalfOf(devfund.address, oneHundred.div(4))).to.be.revertedWith("TetradWallet: insufficient allowance");
+        });
+
+        it("withdrawOnBehalfOf FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.deposit(oneHundred);
+
+            await dummyToken.transfer(devfund.address, oneHundred.div(2));
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.depositOnBehalfOf(devfund.address, oneHundred.div(2));
+            await expect(tetradWallet.withdrawOnBehalfOf(devfund.address, oneHundred.div(4))).to.be.revertedWith("Not authorized.");
+            await expect(tetradWallet.connect(devfund).withdrawOnBehalfOf(devfund.address, oneHundred)).to.be.revertedWith("Insufficient total balance.");
+        });
+
+        it("takeProfitOnBehalfOf FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.deposit(oneHundred);
+
+            await dummyToken.transfer(devfund.address, oneHundred.div(2));
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.depositOnBehalfOf(devfund.address, oneHundred.div(2));
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today-1, today-1);
+            await tetradWallet.adminWithdraw(oneHundred.div(4));
+            await expect(tetradWallet.connect(devfund).takeProfitOnBehalfOf(devfund.address)).to.be.revertedWith("Cannot take profit if locked.");
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await expect(tetradWallet.connect(devfund).takeProfitOnBehalfOf(devfund.address)).to.be.revertedWith("Can't take profit on losses/delta neutral/pending only.");
+        });
+
+        //TODO: Stretch goal (after test deployment, before mainnet deployment): Admin functionality
 
     });
 });
