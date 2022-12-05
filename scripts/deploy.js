@@ -59,14 +59,15 @@ async function main() {
     // await dummyToken.deployed();
     // console.log("- DummyToken deployed to:", dummyToken.address);
 
-    const dummyToken = await hre.ethers.getContractAt("DummyToken", "0x55915FD5433193a082434A280e7A460A3d529d2f");
+    const usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 
     const TetradWallet = await hre.ethers.getContractFactory("TetradWallet");
-    const tetradWallet = await TetradWallet.deploy(dummyToken.address);
+    const tetradWallet = await TetradWallet.deploy(usdtAddress);
     await tetradWallet.deployed();
     console.log("- TetradWallet deployed to:", tetradWallet.address);
     await (await tetradWallet.adminChangeFeeWallet("0x15A9D96300602fe397eB404677cB5eDf04fFc15D")).wait();
-    await (await tetradWallet.transferOwnership("0x509B32CD76eB1bDCc99E051a514B3E8AdAc89C32")).wait();
+    await (await tetradWallet.adminSettings(165, 1, 31)).wait();
+    await (await tetradWallet.transferOwnership("0xBc74Fd37923E82e7c53D161856226CFDbe20FE38")).wait();
     console.log("- TetradWallet done.");
 }
 

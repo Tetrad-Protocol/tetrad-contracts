@@ -117,18 +117,18 @@ contract TetradWallet
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
-    function getUnlockTime() public view returns(uint256) {
+    function getOwnerUnlockTime() public view returns(uint256) {
         return _lockTime;
     }
     //Locks the contract for owner for the amount of time provided
-    function lock(uint256 time) public virtual onlyOwner {
+    function ownerLock(uint256 time) public virtual onlyOwner {
         _previousOwner = _owner;
         _owner = address(0);
         _lockTime = block.timestamp + time;
         emit OwnershipTransferred(_owner, address(0));
     }
     //Unlocks the contract for owner when _lockTime is exceeds
-    function unlock() public virtual {
+    function ownerUnlock() public virtual {
         require(_previousOwner == msg.sender, "You don't have permission to unlock");
         require(block.timestamp > _lockTime, "Contract is locked until 7 days");
         emit OwnershipTransferred(_owner, _previousOwner);
@@ -163,8 +163,8 @@ contract TetradWallet
         emit OwnershipTransferred(address(0), msgSender);
 
         withdrawFee = 165;
-        unlockDayMin = 1;
-        unlockDayMax = 5;
+        unlockDayMin = 25;
+        unlockDayMax = 31;
         asset = depositedAsset;
         feeWallet = msgSender;
     }
@@ -294,7 +294,7 @@ contract TetradWallet
 
         uint256 amountFromPending = amount > pendingBalance ? pendingBalance : amount;
         uint256 amountFromBalance = amount - amountFromPending;
-        assert(amountFromPending + amountFromBalance == amount); //Comment out this line after testing to save gas.
+        //assert(amountFromPending + amountFromBalance == amount); //Comment out this line after testing to save gas.
 
         //Handle pendingDeposited
         if(amountFromPending > 0)
@@ -322,7 +322,7 @@ contract TetradWallet
 
             //Give fee
             uint256 fee = amountFromBalance * withdrawFee / 10000;
-            if(fee > 0) asset.transfer(owner(), fee);
+            if(fee > 0) asset.transfer(feeWallet, fee);
 
             //Give rest to user
             if(behalfOf != spender) _spendAllowance(behalfOf, spender, amountFromBalance);
@@ -392,6 +392,9 @@ contract TetradWallet
     }
 
     //If no funds are moved at all, then the nonce will not increase and nothing will count.
+    //If someone comes in and transfers money without using this or user deposit, it will go directly to the users,
+    //but will not increase the nonce. This is fine, it just means that people will randomly be able to withdraw more
+    //tokens in the middle of the epoch, open or closed.
     function adminDeposit(uint256 amount) external onlyOwner
     {
         //This also marks the start of the next nonce.
@@ -432,9 +435,11 @@ contract TetradWallet
 
     function adminSettings(uint256 fee, uint256 unlockMin, uint256 unlockMax) external onlyOwner
     {
-        require(fee <= 600, "Withdraw fee must be lower or equal to than 6%.");
-        require(unlockMax >= unlockMin, "Unlock day max must be greater than unlock day min.");
-        require(unlockDayMin >= 1 && unlockDayMax <= 28, "Unlock time must be at a time that all months have.");
+        require(fee <= 600, "Withdraw fee must be lower than or equal to 6%.");
+        require(unlockMax >= unlockMin, "Unlock day max must be greater than or equal to unlock day min.");
+        require(unlockMin >= 1 && unlockMin <= 28, "Unlock day min must be at a time that all months have.");
+        //Unlock day max can be whenever as long as the unlock day STARTS before a time where all months do not have.
+        //This is so that people have at least a single day to withdraw at all times.
         withdrawFee = fee;
         unlockDayMin = unlockMin;
         unlockDayMax = unlockMax;

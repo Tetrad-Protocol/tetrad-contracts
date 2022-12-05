@@ -59,8 +59,7 @@ describe('v2', function () {
             params: [
                 {
                     forking: {
-                        jsonRpcUrl: "https://thrilling-light-shadow.matic-testnet.discover.quiknode.pro/760e2b4433ff69856f97b6f3f0629dab010d4b3b/",
-                        //gasPrice: 25000000000,
+                        jsonRpcUrl: process.env.TEST_RPC,
                         blockNumber: 29045000
                     }
                 }
@@ -685,6 +684,52 @@ describe('v2', function () {
             console.log(ethers.utils.formatEther(await dummyToken.balanceOf(devfund.address)));
         });
 
+        it("collect initial and gains solo interference before SUCCESS", async () => {
+            //Set unlock time to today
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await dummyToken.transfer(devfund.address, oneHundred);
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            //Some old
+            await tetradWallet.connect(devfund).deposit(oneHundred);
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today-1, today-1);
+            await dummyToken.transfer(tetradWallet.address, ethers.utils.parseEther("100"));
+            await tetradWallet.adminDeposit(0);
+            await tetradWallet.deposit(oneHundred);
+            const nonce = await tetradWallet.nonce();
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+
+            expect(await tetradWallet.availableToWithdraw(deployer.address)).to.equal(ethers.utils.parseEther("100"));
+            expect(await tetradWallet.availableToWithdraw(devfund.address)).to.equal(ethers.utils.parseEther("200"));
+            await tetradWallet.connect(devfund).collect();
+
+            expect(await dummyToken.balanceOf(devfund.address)).to.equal(ethers.utils.parseEther("196.7"));
+            console.log(ethers.utils.formatEther(await dummyToken.balanceOf(devfund.address)));
+        });
+
+        it("collect initial and gains solo interference after SUCCESS", async () => {
+            //Set unlock time to today
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await dummyToken.transfer(devfund.address, oneHundred);
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            //Some old
+            await tetradWallet.connect(devfund).deposit(oneHundred);
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today-1, today-1);
+            await tetradWallet.adminDeposit(0);
+            await dummyToken.transfer(tetradWallet.address, ethers.utils.parseEther("100"));
+            await tetradWallet.deposit(oneHundred);
+            const nonce = await tetradWallet.nonce();
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
+
+            expect(await tetradWallet.availableToWithdraw(deployer.address)).to.equal(ethers.utils.parseEther("100"));
+            expect(await tetradWallet.availableToWithdraw(devfund.address)).to.equal(ethers.utils.parseEther("200"));
+            await tetradWallet.connect(devfund).collect();
+
+            expect(await dummyToken.balanceOf(devfund.address)).to.equal(ethers.utils.parseEther("196.7"));
+            console.log(ethers.utils.formatEther(await dummyToken.balanceOf(devfund.address)));
+        });
+
         it("takeProfit SUCCESS", async () => {
             //Set unlock time to today
             await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today, today);
@@ -793,7 +838,50 @@ describe('v2', function () {
             await expect(tetradWallet.connect(devfund).takeProfitOnBehalfOf(devfund.address)).to.be.revertedWith("Can't take profit on losses/delta neutral/pending only.");
         });
 
-        //TODO: Stretch goal (after test deployment, before mainnet deployment): Admin functionality
+        //Admin functionality
 
+        //Success is already tested in multiple ways in the above tests.
+        it("adminDeposit FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), 1, 28);
+            await expect(tetradWallet.adminDeposit(oneHundred)).to.be.revertedWith("Can only move funds when locked.");
+            await expect(tetradWallet.connect(devfund).adminDeposit(oneHundred)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("adminWithdraw FAILURE", async () => {
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), 1, 28);
+            await expect(tetradWallet.adminWithdraw(oneHundred)).to.be.revertedWith("Can only move funds when locked.");
+            await expect(tetradWallet.connect(devfund).adminWithdraw(oneHundred)).to.be.revertedWith("Ownable: caller is not the owner");
+            //Funds available
+            const nonce = await tetradWallet.nonce();
+            //await tetradWallet.adminSettings(0, today, today);
+            await dummyToken.approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await dummyToken.transfer(devfund.address, oneHundred);
+            await dummyToken.connect(devfund).approve(tetradWallet.address, BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+            await tetradWallet.adminSettings(await tetradWallet.withdrawFee(), today-1, today-1);
+            await tetradWallet.adminDeposit(oneHundred.div(2));
+            await tetradWallet.connect(devfund).deposit(oneHundred.div(2));
+            await expect(tetradWallet.adminWithdraw(oneHundred)).to.be.revertedWith("Not enough funds available.");
+            await tetradWallet.adminWithdraw(oneHundred.div(2));
+        });
+
+        it("adminSettings FAILURE/SUCCESS", async () => {
+            await expect(tetradWallet.adminSettings(601, today, today)).to.be.revertedWith("Withdraw fee must be lower than or equal to 6%.");
+            await expect(tetradWallet.adminSettings(600, today+1, today)).to.be.revertedWith("Unlock day max must be greater than or equal to unlock day min.");
+            await expect(tetradWallet.adminSettings(600, 0, 28)).to.be.revertedWith("Unlock day min must be at a time that all months have.");
+            await expect(tetradWallet.adminSettings(600, 29, 30)).to.be.revertedWith("Unlock day min must be at a time that all months have.");
+            await expect(tetradWallet.connect(devfund).adminSettings(600, 1, 28)).to.be.revertedWith("Ownable: caller is not the owner");
+            await tetradWallet.adminSettings(600, 1, 28)
+            expect(await tetradWallet.unlockDayMax()).to.equal(28);
+            await tetradWallet.adminSettings(600, 1, 31)
+            expect(await tetradWallet.withdrawFee()).to.equal(600);
+            expect(await tetradWallet.unlockDayMin()).to.equal(1);
+            expect(await tetradWallet.unlockDayMax()).to.equal(31);
+        });
+
+        it("adminChangeFeeWallet FAILURE/SUCCESS", async () => {
+            await expect(tetradWallet.connect(devfund).adminChangeFeeWallet(daofund.address)).to.be.revertedWith("Ownable: caller is not the owner");
+            await tetradWallet.adminChangeFeeWallet(daofund.address);
+            expect(await tetradWallet.feeWallet()).to.equal(daofund.address);
+        });
     });
 });

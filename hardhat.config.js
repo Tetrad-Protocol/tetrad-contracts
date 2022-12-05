@@ -12,11 +12,6 @@ require("@tenderly/hardhat-tenderly");
 module.exports = {
     networks: {
         hardhat: {
-            // forking: {
-            //     url: "https://api.avax-test.network/ext/bc/C/rpc",
-            //     gasPrice: 25000000000,
-            //     blockNumber: 10186172
-            // },
             accounts: process.env.DEPLOYER_PRIVATE_KEY !== undefined ? [
                 {
                     privateKey: process.env.DEPLOYER_PRIVATE_KEY,
@@ -31,16 +26,12 @@ module.exports = {
                     balance: "10000000000000000000000"
                 }] : [],
         },
-        ropsten: {
-            url: "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-            accounts: process.env.DEPLOYER_PRIVATE_KEY !== undefined ? [process.env.DEPLOYER_PRIVATE_KEY, process.env.DAO_PRIVATE_KEY, process.env.DEV_PRIVATE_KEY] : [],
-        },
         polygon: {
             url: "https://polygon-rpc.com/",
             accounts: process.env.DEPLOYER_PRIVATE_KEY !== undefined ? [process.env.DEPLOYER_PRIVATE_KEY, process.env.DAO_PRIVATE_KEY, process.env.DEV_PRIVATE_KEY] : [],
         },
         polygonMumbai: {
-            url: "https://matic-mumbai.chainstacklabs.com/",
+            url: "https://rpc-mumbai.maticvigil.com/",
             accounts: process.env.DEPLOYER_PRIVATE_KEY !== undefined ? [process.env.DEPLOYER_PRIVATE_KEY, process.env.DAO_PRIVATE_KEY, process.env.DEV_PRIVATE_KEY] : [],
         }
     },
@@ -103,9 +94,5 @@ module.exports = {
             path: './abi/ugly',
             pretty: false,
         },
-    ],
-    tenderly: {
-        project: "Project",
-        username: "GameTheory",
-    }
+    ]
 }
